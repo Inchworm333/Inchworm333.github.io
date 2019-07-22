@@ -7,6 +7,12 @@
 </head>
 <body>
 
+<style>
+	body {
+		margin: 0 !important;
+	}
+</style>
+
 <canvas id="MoonHere"></canvas>
 
 </body>
@@ -14,8 +20,8 @@
 <script>
 	function main() {
 		const canvas = document.querySelector("#MoonHere");
-		canvas.width = 1200;
-		canvas.height = 600;
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
 
 		const renderer = new THREE.WebGLRenderer({canvas, antialias: true});
 
