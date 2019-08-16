@@ -33,7 +33,10 @@
 		camera.position.z = 500;
 
 		let texture = new THREE.TextureLoader().load("./textures/8k_moon.jpg");
-		let bump = new THREE.TextureLoader().load("./textures/moonbump4k.jpg");
+		let bump = new THREE.TextureLoader().load("./textures/8k_moon_bump.png");
+		let normal = new THREE.TextureLoader().load("./textures/8k_moon_normal.png");
+		let diffuse = new THREE.TextureLoader().load("./textures/8k_moon_diffuse.png");
+		let specular = new THREE.TextureLoader().load("./textures/8k_moon_specular.png");
 
 		let geometry = new THREE.SphereBufferGeometry(250, 35, 35);
 
