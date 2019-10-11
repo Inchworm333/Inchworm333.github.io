@@ -32,15 +32,17 @@
 		let camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 2000 );
 		camera.position.z = 500;
 
-		let texture = new THREE.TextureLoader().load("./textures/8k_moon.jpg");
+		let texture = new THREE.TextureLoader().load("./textures/8k_mars.jpg");
 		let bump = new THREE.TextureLoader().load("./textures/8k_moon_bump.png");
 		let normal = new THREE.TextureLoader().load("./textures/8k_moon_normal.png");
 		let diffuse = new THREE.TextureLoader().load("./textures/8k_moon_diffuse.png");
 		let specular = new THREE.TextureLoader().load("./textures/8k_moon_specular.png");
+		let displace = new THREE.TextureLoader().load("./textures/moondisplace4k.jpg");
 
 		let geometry = new THREE.SphereBufferGeometry(250, 35, 35);
 
-		let material = new THREE.MeshPhongMaterial( { map: texture , reflectivity : 0, shininess: 0} );
+		let material = new THREE.MeshPhongMaterial( { map: texture , reflectivity : 0, shininess: 0, displacementMap: displace,
+		displacementScale: 5} );
 		let moon = new THREE.Mesh(geometry, material);
 
 		scene.add(moon);

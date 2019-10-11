@@ -1,9 +1,75 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <title>Home | NV</title>
+
+    <!--Favicons Generated-->
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <link rel="manifest" href="/icons/site.webmanifest">
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="#27add3">
+    <link rel="shortcut icon" href="/icons/favicon.ico">
+    <meta name="apple-mobile-web-app-title" content="Nicholas Valletta">
+    <meta name="application-name" content="Nicholas Valletta">
+    <meta name="msapplication-TileColor" content="#b91d47">
+    <meta name="msapplication-config" content="/icons/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" type="text/css" href="styles/main.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/109/three.js" integrity="sha256-eowb6mNlBpUobaM+KF2NpeDCyjr0pF3ka0p5z3Bn9SQ=" crossorigin="anonymous"></script>
   </head>
 
   <body>
-  <p> Welcome! </p>
+  <header id="top"></header>
   </body>
+  <script>
+    let header = document.getElementById('top');
+    let scene = new THREE.Scene();
+    let camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+    camera.position.set(60,0,1000); camera.lookAt(scene.position);
+
+    let renderer = new THREE.WebGLRenderer();
+    renderer.setSize( window.innerWidth, (window.innerHeight - header.offsetHeight));
+    document.body.appendChild( renderer.domElement );
+
+    let loader = new THREE.FontLoader();
+    loader.load( 'fonts/Open_Sans_Regular.json', function ( font ) {
+
+      let geometry = new THREE.TextGeometry( 'Just Testing', {
+        font: font,
+        size: 100,
+        height: 50,
+        curveSegments: 12,
+        bevelEnabled: false,
+        bevelThickness: 10,
+        bevelSize: 8,
+        bevelOffset: 0,
+        bevelSegments: 3
+      } );
+      let textMaterial = new THREE.MeshBasicMaterial(
+              { color: 0x008000}
+      );
+
+      let mesh = new THREE.Mesh( geometry, textMaterial );
+
+      scene.add(mesh);
+    } );
+
+    {
+      const color = 0xFFFFFF;
+      const intensity = 1;
+      const light = new THREE.DirectionalLight(color, intensity);
+      light.position.set(300, 300, 1000);
+      scene.add(light);
+    }
+
+    function animate() {
+      requestAnimationFrame( animate );
+      renderer.render( scene, camera );
+    }
+    animate();
+  </script>
 </html>
