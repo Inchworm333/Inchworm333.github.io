@@ -1,0 +1,172 @@
+<html>
+<head>
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<style>
+		html, body {
+			height: 100vh;
+			padding: 0;
+			margin: 0;
+		}
+		
+		.container {
+			box-sizing: border-box;
+			display: grid;
+			height: 100%;
+			padding: 30px;
+			grid-template-columns: 50% 50%;
+			grid-template-rows: 50% 50%;
+		}
+		
+		.left {
+			grid-column: 1;
+			grid-row: span 2;
+		}
+		
+		.right {
+			grid-column: 2;
+			grid-row: span 2;
+		}
+		
+		.top {
+			grid-row: 1;
+		}
+		
+		.bottom {
+			grid-row: 2;
+		}
+		
+		i {
+			user-select: none;
+			cursor: pointer;
+		}
+	
+	</style>
+</head>
+<body>
+<div class="container">
+	
+	<div class="left" style="align-items: flex-start; overflow: scroll;">
+		<canvas id="canvas" width="100px" height="100px"></canvas>
+	</div>
+	
+	<div class="right top">
+		
+		<div style="display: grid; grid-template-columns: 40% 60%; place-items: center center">
+			<img style="grid-column: 1" id="svg" src="./incomplete_icon.svg" alt="your image" onload="imageLoad(this)"/>
+			<span id="original-aspect" style="grid-column: 1"></span>
+			<label style="grid-column: 2; grid-row: 1; align-self: start;">
+				<span>Upload SVG Here:</span>
+				<input id="image" onchange="imgInput(this)" class="image-file" type="file" alt="image" accept=".svg">
+			</label>
+		</div>
+	</div>
+	
+	<div class="right bottom" style="display: flex; flex-direction: column; justify-content: space-between; align-items: center">
+		<div>
+			<label>
+				<span>Width:</span><input id="width" type="number" onchange="sizeCanvas(this)" disabled>
+			</label>
+			
+			<label>
+				<span>Height:</span><input id="height" type="number" onchange="sizeCanvas(this)" disabled>
+			</label>
+			
+			<i onclick="onAspectChange(this)" title="aspect lock" class="material-icons">lock</i>
+		</div>
+		
+		<div>
+			<input type="button" value="DRAW" onclick="draw()"/>
+			<input type="button" value="CLEAR" onclick="erase()"/>
+			<input type="button" value="DOWNLOAD" onclick="download()"/>
+		</div>
+	</div>
+
+</div>
+
+<script>
+	let canvas = document.getElementById('canvas');
+	let svg = document.getElementById('svg')
+	let width = document.getElementById('width');
+	let height = document.getElementById('height');
+	let aspectLock = true;
+	let aspect;
+	let fileName;
+
+	function imgInput(input) {
+		let image = input.files.item(0);
+		let reader = new FileReader();
+		
+		width.disabled = false;
+		height.disabled = false;
+
+		reader.onload = function () {
+			svg.setAttribute('src', reader.result.toString());
+			fileName = image.name.split('.')[0];
+		};
+
+		reader.readAsDataURL(image);
+	}
+
+	function draw() {
+		canvas.getContext("2d").drawImage(svg, 0, 0, canvas.width, canvas.height);
+	}
+
+	function download() {
+
+		let a = document.createElement("a");
+
+		a.download = `${fileName}.png`;
+
+		a.href = canvas.toDataURL("image/png");
+		a.click();
+	}
+	
+	function sizeCanvas(size) {
+		if(aspectLock) {
+			let side = ['width', 'height'].filter(x => x != size.id)[0];
+			
+			let side_val = eval(`get_${side}(${size.value})`);
+			document.getElementById(side).value = side_val;
+			canvas.setAttribute(side, side_val);
+		}
+		canvas.setAttribute(size.id, size.value);
+		draw();
+	}
+	
+	function onAspectChange(lockIco) {
+		aspectLock = !aspectLock;
+		lockIco.innerHTML = aspectLock ? 'lock' : 'lock_open';
+	}
+	
+	function erase() {
+		canvas.setAttribute('height', 100);
+		document.getElementById("height").value = 100;
+		
+		canvas.setAttribute('width', 100);
+		document.getElementById("width").value = 100;
+	}
+	
+	function imageLoad(image) {
+		let reduced = reduce(image.width, image.height);
+		aspect = getAspect(image.width, image.height);
+		
+		document.getElementById("original-aspect").innerHTML = reduced[0] + ":" + reduced[1];
+	}
+	
+	///HELPERS
+	
+	function reduce(numerator, denominator) {
+		var gcd = (a,b) => b ? gcd(b, a%b) : a;
+		gcd = gcd(numerator,denominator);
+		return [numerator/gcd, denominator/gcd];
+	}
+	
+	const getAspect = (width, height) => width / height;
+	
+	const get_height = width => width / aspect;
+	
+	const get_width = height => aspect * height;
+</script>
+
+</body>
+</html>
